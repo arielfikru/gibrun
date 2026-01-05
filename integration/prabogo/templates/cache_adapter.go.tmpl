@@ -1,0 +1,100 @@
+package {{.PackageName}}
+
+import (
+	"context"
+	"time"
+
+	"github.com/arielfikru/gibrun"
+)
+
+// Config holds the configuration for the cache adapter.
+type Config struct {
+	Addr     string
+	Password string
+	DB       int
+	TTL      time.Duration
+}
+
+// Adapter provides caching operations using Gib.run.
+type Adapter struct {
+	client *gibrun.Client
+	ttl    time.Duration
+}
+
+// NewAdapter creates a new cache adapter.
+func NewAdapter(cfg Config) *Adapter {
+	client := gibrun.New(gibrun.Config{
+		Addr:     cfg.Addr,
+		Password: cfg.Password,
+		DB:       cfg.DB,
+	})
+
+	ttl := cfg.TTL
+	if ttl == 0 {
+		ttl = time.Hour
+	}
+
+	return &Adapter{
+		client: client,
+		ttl:    ttl,
+	}
+}
+
+// Close closes the Redis connection.
+func (a *Adapter) Close() error {
+	return a.client.Close()
+}
+
+// Ping checks the Redis connection.
+func (a *Adapter) Ping(ctx context.Context) error {
+	return a.client.Ping(ctx)
+}
+
+// Set stores a value with the default TTL.
+func (a *Adapter) Set(ctx context.Context, key string, value any) error {
+	return a.client.Gib(ctx, key).Value(value).TTL(a.ttl).Exec()
+}
+
+// SetWithTTL stores a value with a custom TTL.
+func (a *Adapter) SetWithTTL(ctx context.Context, key string, value any, ttl time.Duration) error {
+	return a.client.Gib(ctx, key).Value(value).TTL(ttl).Exec()
+}
+
+// Get retrieves a value and unmarshals it into dest.
+// Returns (true, nil) if found, (false, nil) if not found.
+func (a *Adapter) Get(ctx context.Context, key string, dest any) (bool, error) {
+	return a.client.Run(ctx, key).Bind(dest)
+}
+
+// GetRaw retrieves a raw string value.
+func (a *Adapter) GetRaw(ctx context.Context, key string) (string, bool, error) {
+	return a.client.Run(ctx, key).Raw()
+}
+
+// Delete removes a key.
+func (a *Adapter) Delete(ctx context.Context, keys ...string) error {
+	return a.client.Del(ctx, keys...)
+}
+
+// Exists checks if a key exists.
+func (a *Adapter) Exists(ctx context.Context, key string) (bool, error) {
+	return a.client.Exists(ctx, key)
+}
+
+// Incr increments a counter.
+func (a *Adapter) Incr(ctx context.Context, key string) (int64, error) {
+	return a.client.Sprint(ctx, key).Incr()
+}
+
+// IncrBy increments a counter by n.
+func (a *Adapter) IncrBy(ctx context.Context, key string, n int64) (int64, error) {
+	return a.client.Sprint(ctx, key).IncrBy(n)
+}
+
+// Scan iterates over keys matching a pattern.
+func (a *Adapter) Scan(ctx context.Context, pattern string) ([]string, error) {
+	return a.client.Blusukan(ctx, gibrun.ScanOptions{
+		Pattern: pattern,
+		Count:   100,
+	}).All()
+}

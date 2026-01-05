@@ -1,0 +1,118 @@
+package middleware
+
+import (
+	"time"
+
+	"github.com/arielfikru/gibrun"
+	"github.com/gofiber/fiber/v2"
+)
+
+// RateLimitConfig configures the rate limiting middleware.
+type RateLimitConfig struct {
+	// RedisAddr is the Redis server address.
+	RedisAddr string
+
+	// Rate is the number of requests allowed per window.
+	Rate int
+
+	// Window is the time window for rate limiting.
+	Window time.Duration
+
+	// KeyFunc extracts the rate limit key from the request.
+	// Default uses client IP.
+	KeyFunc func(c *fiber.Ctx) string
+
+	// SkipFunc determines if rate limiting should be skipped.
+	// Return true to skip rate limiting for this request.
+	SkipFunc func(c *fiber.Ctx) bool
+
+	// ErrorHandler is called when rate limit is exceeded.
+	ErrorHandler func(c *fiber.Ctx, remaining int, resetAt time.Time) error
+}
+
+// NewRateLimiter creates a Fiber middleware for rate limiting.
+func NewRateLimiter(cfg RateLimitConfig) fiber.Handler {
+	// Create Redis client
+	client := gibrun.New(gibrun.Config{
+		Addr: cfg.RedisAddr,
+	})
+
+	// Create rate limiter
+	limiter := gibrun.NewRateLimiter(client, gibrun.RateLimitConfig{
+		Rate:   cfg.Rate,
+		Window: cfg.Window,
+	})
+
+	// Default key function
+	keyFunc := cfg.KeyFunc
+	if keyFunc == nil {
+		keyFunc = func(c *fiber.Ctx) string {
+			return c.IP()
+		}
+	}
+
+	// Default error handler
+	errorHandler := cfg.ErrorHandler
+	if errorHandler == nil {
+		errorHandler = func(c *fiber.Ctx, remaining int, resetAt time.Time) error {
+			c.Set("X-RateLimit-Remaining", "0")
+			c.Set("X-RateLimit-Reset", resetAt.Format(time.RFC3339))
+			return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
+				"error":      "Rate limit exceeded",
+				"retry_after": resetAt.Sub(time.Now()).Seconds(),
+			})
+		}
+	}
+
+	return func(c *fiber.Ctx) error {
+		// Check if should skip
+		if cfg.SkipFunc != nil && cfg.SkipFunc(c) {
+			return c.Next()
+		}
+
+		// Get rate limit key
+		key := keyFunc(c)
+
+		// Check rate limit
+		result, err := limiter.Allow(c.Context(), key)
+		if err != nil {
+			// On error, allow request but log
+			return c.Next()
+		}
+
+		// Set headers
+		c.Set("X-RateLimit-Limit", string(rune(cfg.Rate)))
+		c.Set("X-RateLimit-Remaining", string(rune(result.Remaining)))
+		c.Set("X-RateLimit-Reset", result.ResetAt.Format(time.RFC3339))
+
+		// Check if allowed
+		if !result.Allowed {
+			return errorHandler(c, result.Remaining, result.ResetAt)
+		}
+
+		return c.Next()
+	}
+}
+
+// NewRateLimiterWithClient creates a rate limiter using an existing Gib.run client.
+func NewRateLimiterWithClient(client *gibrun.Client, rate int, window time.Duration) fiber.Handler {
+	limiter := gibrun.NewRateLimiter(client, gibrun.RateLimitConfig{
+		Rate:   rate,
+		Window: window,
+	})
+
+	return func(c *fiber.Ctx) error {
+		result, err := limiter.Allow(c.Context(), c.IP())
+		if err != nil {
+			return c.Next()
+		}
+
+		if !result.Allowed {
+			return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
+				"error": "Rate limit exceeded",
+			})
+		}
+
+		return c.Next()
+	}
+}

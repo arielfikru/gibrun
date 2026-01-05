@@ -1,0 +1,72 @@
+package {{.PackageName}}
+
+import (
+	"context"
+	"fmt"
+	"time"
+)
+
+// {{.EntityName}}Repository provides caching for {{.EntityName}} entities.
+type {{.EntityName}}Repository struct {
+	adapter *Adapter
+	prefix  string
+}
+
+// New{{.EntityName}}Repository creates a new repository.
+func New{{.EntityName}}Repository(adapter *Adapter) *{{.EntityName}}Repository {
+	return &{{.EntityName}}Repository{
+		adapter: adapter,
+		prefix:  "{{.EntityNameLower}}",
+	}
+}
+
+// key builds a cache key for the entity.
+func (r *{{.EntityName}}Repository) key(id string) string {
+	return fmt.Sprintf("%s:%s", r.prefix, id)
+}
+
+// Set caches an entity.
+func (r *{{.EntityName}}Repository) Set(ctx context.Context, id string, entity *{{.EntityName}}) error {
+	return r.adapter.Set(ctx, r.key(id), entity)
+}
+
+// SetWithTTL caches an entity with custom TTL.
+func (r *{{.EntityName}}Repository) SetWithTTL(ctx context.Context, id string, entity *{{.EntityName}}, ttl time.Duration) error {
+	return r.adapter.SetWithTTL(ctx, r.key(id), entity, ttl)
+}
+
+// Get retrieves an entity from cache.
+// Returns nil if not found.
+func (r *{{.EntityName}}Repository) Get(ctx context.Context, id string) (*{{.EntityName}}, error) {
+	var entity {{.EntityName}}
+	found, err := r.adapter.Get(ctx, r.key(id), &entity)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, nil
+	}
+	return &entity, nil
+}
+
+// Delete removes an entity from cache.
+func (r *{{.EntityName}}Repository) Delete(ctx context.Context, id string) error {
+	return r.adapter.Delete(ctx, r.key(id))
+}
+
+// Exists checks if an entity is cached.
+func (r *{{.EntityName}}Repository) Exists(ctx context.Context, id string) (bool, error) {
+	return r.adapter.Exists(ctx, r.key(id))
+}
+
+// DeleteAll removes all cached entities matching the prefix.
+func (r *{{.EntityName}}Repository) DeleteAll(ctx context.Context) error {
+	keys, err := r.adapter.Scan(ctx, r.prefix+":*")
+	if err != nil {
+		return err
+	}
+	if len(keys) > 0 {
+		return r.adapter.Delete(ctx, keys...)
+	}
+	return nil
+}
