@@ -18,11 +18,11 @@ type Program struct {
 }
 
 func main() {
-	// 1. Initialization (Pembentukan Kabinet)
+	// 1. Initialization
 	// Connect to Redis with transparent configuration
 	app := gibrun.New(gibrun.Config{
 		Addr:     "localhost:6379",
-		Password: "", // Open transparency
+		Password: "",
 		DB:       0,
 	})
 	defer app.Close()
@@ -31,16 +31,16 @@ func main() {
 
 	// Check connection
 	if err := app.Ping(ctx); err != nil {
-		fmt.Printf("❌ Failed to connect to Redis: %v\n", err)
-		fmt.Println("   Make sure Redis is running on localhost:6379")
+		fmt.Printf("Failed to connect to Redis: %v\n", err)
+		fmt.Println("Make sure Redis is running on localhost:6379")
 		return
 	}
-	fmt.Println("✅ Connected to Redis!")
+	fmt.Println("Connected to Redis!")
 
 	// ========================================
 	// 2. Giving Data (Gib) - Storing data
 	// ========================================
-	fmt.Println("\n📦 Demonstrating Gib (Store Data)...")
+	fmt.Println("\nDemonstrating Gib (Store Data)...")
 
 	makanSiang := Program{
 		Name:   "Free Lunch Program",
@@ -55,10 +55,10 @@ func main() {
 		Exec()
 
 	if err != nil {
-		fmt.Printf("❌ Failed to store data: %v\n", err)
+		fmt.Printf("Failed to store data: %v\n", err)
 		return
 	}
-	fmt.Println("✅ Program stored successfully!")
+	fmt.Println("Program stored successfully!")
 
 	// Store a simple string
 	err = app.Gib(ctx, "status:economy").
@@ -67,75 +67,75 @@ func main() {
 		Exec()
 
 	if err != nil {
-		fmt.Printf("❌ Failed to store status: %v\n", err)
+		fmt.Printf("Failed to store status: %v\n", err)
 		return
 	}
-	fmt.Println("✅ Status stored successfully!")
+	fmt.Println("Status stored successfully!")
 
 	// ========================================
 	// 3. Running Data (Run) - Retrieving data
 	// ========================================
-	fmt.Println("\n🏃 Demonstrating Run (Retrieve Data)...")
+	fmt.Println("\nDemonstrating Run (Retrieve Data)...")
 
 	var result Program
 	found, err := app.Run(ctx, "program:priority").Bind(&result)
 
 	if err != nil {
-		fmt.Printf("❌ Error retrieving data: %v\n", err)
+		fmt.Printf("Error retrieving data: %v\n", err)
 		return
 	}
 
 	if found {
-		fmt.Printf("✅ Program found: %s\n", result.Name)
-		fmt.Printf("   Budget: Rp %d\n", result.Budget)
-		fmt.Printf("   Target: %s\n", result.Target)
+		fmt.Printf("Program found: %s\n", result.Name)
+		fmt.Printf("Budget: %d\n", result.Budget)
+		fmt.Printf("Target: %s\n", result.Target)
 	} else {
-		fmt.Println("⚠️  Data not found (cache miss)")
+		fmt.Println("Data not found (cache miss)")
 	}
 
 	// Retrieve simple string using Raw()
 	status, found, err := app.Run(ctx, "status:economy").Raw()
 	if err != nil {
-		fmt.Printf("❌ Error retrieving status: %v\n", err)
+		fmt.Printf("Error retrieving status: %v\n", err)
 		return
 	}
 	if found {
-		fmt.Printf("✅ Economy Status: %s\n", status)
+		fmt.Printf("Economy Status: %s\n", status)
 	}
 
 	// ========================================
 	// 4. Sprint - Atomic Operations
 	// ========================================
-	fmt.Println("\n⚡ Demonstrating Sprint (Atomic Operations)...")
+	fmt.Println("\nDemonstrating Sprint (Atomic Operations)...")
 
 	// Increment visitor counter
 	count, err := app.Sprint(ctx, "counter:visitors").Incr()
 	if err != nil {
-		fmt.Printf("❌ Error incrementing: %v\n", err)
+		fmt.Printf("Error incrementing: %v\n", err)
 		return
 	}
-	fmt.Printf("✅ Visitor count: %d\n", count)
+	fmt.Printf("Visitor count: %d\n", count)
 
 	// Increment by specific amount
 	score, err := app.Sprint(ctx, "counter:score").IncrBy(100)
 	if err != nil {
-		fmt.Printf("❌ Error: %v\n", err)
+		fmt.Printf("Error: %v\n", err)
 		return
 	}
-	fmt.Printf("✅ Score increased to: %d\n", score)
+	fmt.Printf("Score increased to: %d\n", score)
 
 	// Decrement
 	stock, err := app.Sprint(ctx, "counter:stock").Decr()
 	if err != nil {
-		fmt.Printf("❌ Error: %v\n", err)
+		fmt.Printf("Error: %v\n", err)
 		return
 	}
-	fmt.Printf("✅ Stock count: %d\n", stock)
+	fmt.Printf("Stock count: %d\n", stock)
 
 	// ========================================
 	// Cleanup (optional)
 	// ========================================
-	fmt.Println("\n🧹 Cleaning up demo data...")
+	fmt.Println("\nCleaning up demo data...")
 	app.Del(ctx, "program:priority", "status:economy", "counter:visitors", "counter:score", "counter:stock")
-	fmt.Println("✅ Demo complete! 🏃💨🥛")
+	fmt.Println("Demo complete!")
 }

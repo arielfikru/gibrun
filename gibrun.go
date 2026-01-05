@@ -1,7 +1,7 @@
 // Package gibrun provides an opinionated Redis framework for Go developers
 // who prioritize acceleration, sustainability, and high-performance downstreaming.
 //
-// "Give Data. Run Fast." 🏃💨🥛
+// "Give Data. Run Fast."
 package gibrun
 
 import (
