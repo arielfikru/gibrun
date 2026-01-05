@@ -691,6 +691,58 @@ code {
     font-size: 0.9rem;
 }
 
+/* ===== PraboGo Section ===== */
+.prabogo {
+    padding: 120px 0;
+    background: var(--bg-secondary);
+}
+
+.prabogo-content {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 60px;
+    align-items: start;
+}
+
+.prabogo-info h3 {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+}
+
+.prabogo-info>p {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.7;
+}
+
+.prabogo-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.prabogo-feature {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--text-secondary);
+}
+
+.prabogo-feature svg {
+    color: var(--accent-primary);
+    stroke: var(--accent-primary);
+    flex-shrink: 0;
+}
+
+.prabogo-code .code-window {
+    max-width: 100%;
+}
+
+.prabogo-code .code-content {
+    font-size: 0.85rem;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
     .nav {
@@ -724,6 +776,10 @@ code {
     }
 
     .features-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .prabogo-content {
         grid-template-columns: 1fr;
     }
 }

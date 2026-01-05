@@ -316,6 +316,99 @@ score, _ := app.<span class="fn">Sprint</span>(ctx, <span class="str">"counter:s
         </div>
     </section>
 
+    <!-- PraboGo Integration Section -->
+    <section id="prabogo" class="prabogo">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Integration</span>
+                <h2>Works with <span class="gradient-text">PraboGo</span></h2>
+                <p>Seamlessly integrates with PraboGo's hexagonal architecture</p>
+            </div>
+
+            <div class="prabogo-content">
+                <div class="prabogo-info">
+                    <h3>Hexagonal Architecture Ready</h3>
+                    <p>Gib.run is designed to work as an outbound adapter in PraboGo projects. Use it for caching, rate
+                        limiting, and session management.</p>
+
+                    <div class="prabogo-features">
+                        <div class="prabogo-feature">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Cache Adapter Templates</span>
+                        </div>
+                        <div class="prabogo-feature">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Fiber Rate Limiter Middleware</span>
+                        </div>
+                        <div class="prabogo-feature">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Repository Pattern Support</span>
+                        </div>
+                        <div class="prabogo-feature">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Docker Compose Compatible</span>
+                        </div>
+                    </div>
+
+                    <a href="https://github.com/arielfikru/gibrun/tree/main/integration/prabogo"
+                        class="btn btn-secondary" target="_blank">
+                        View Integration Guide
+                    </a>
+                </div>
+
+                <div class="prabogo-code">
+                    <div class="code-window">
+                        <div class="code-header">
+                            <div class="code-dots">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                            </div>
+                            <span class="code-title">user_cache_adapter.go</span>
+                        </div>
+                        <pre class="code-content"><code><span class="cm">// PraboGo Hexagonal Architecture</span>
+<span class="kw">type</span> UserCacheAdapter <span class="kw">struct</span> {
+    client *gibrun.Client
+}
+
+<span class="kw">func</span> (a *UserCacheAdapter) <span class="fn">Set</span>(
+    ctx context.Context,
+    user *User,
+) <span class="tp">error</span> {
+    <span class="kw">return</span> a.client.<span class="fn">Gib</span>(ctx, <span class="str">"user:"</span>+user.ID).
+        <span class="fn">Value</span>(user).
+        <span class="fn">TTL</span>(time.Hour).
+        <span class="fn">Exec</span>()
+}
+
+<span class="kw">func</span> (a *UserCacheAdapter) <span class="fn">Get</span>(
+    ctx context.Context,
+    id <span class="tp">string</span>,
+) (*User, <span class="tp">error</span>) {
+    <span class="kw">var</span> user User
+    found, err := a.client.<span class="fn">Run</span>(ctx, <span class="str">"user:"</span>+id).
+        <span class="fn">Bind</span>(&user)
+    <span class="kw">if</span> !found { <span class="kw">return</span> <span class="kw">nil</span>, <span class="kw">nil</span> }
+    <span class="kw">return</span> &user, err
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
