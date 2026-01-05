@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gib.run - The Opinionated Redis Framework for Go</title>
+    <meta name="description"
+        content="Give Data. Run Fast. The opinionated Redis framework for Go developers who prioritize acceleration, sustainability, and high-performance.">
+    <meta name="keywords" content="golang, redis, framework, cache, go-redis, gibrun">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-glow"></div>
+        <nav class="nav">
+            <div class="nav-brand">
+                <span class="brand-text">Gib.run</span>
+            </div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#installation">Install</a>
+                <a href="#usage">Usage</a>
+                <a href="https://github.com/arielfikru/gibrun" class="btn-github" target="_blank">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg>
+                    GitHub
+                </a>
+            </div>
+        </nav>
+
+        <div class="hero-content">
+            <div class="hero-badge">v1.0 - Solo Release</div>
+            <h1 class="hero-title">
+                <span class="gradient-text">Give Data.</span>
+                <span class="gradient-text-alt">Run Fast.</span>
+            </h1>
+            <p class="hero-subtitle">
+                The opinionated Redis framework for Go developers who prioritize
+                <strong>acceleration</strong>, <strong>sustainability</strong>, and
+                <strong>high-performance downstreaming</strong>.
+            </p>
+            <div class="hero-actions">
+                <a href="#installation" class="btn btn-primary">
+                    Get Started
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </a>
+                <a href="#usage" class="btn btn-secondary">View Examples</a>
+            </div>
+            <div class="hero-install">
+                <code>go get github.com/arielfikru/gibrun</code>
+                <button class="copy-btn" onclick="copyInstall()">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="9" y="9" width="13" height="13" rx="2" />
+                        <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="hero-code">
+            <div class="code-window">
+                <div class="code-header">
+                    <div class="code-dots">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <span class="code-title">main.go</span>
+                </div>
+                <pre
+                    class="code-content"><code><span class="kw">app</span> := gibrun.<span class="fn">New</span>(gibrun.Config{
+    Addr: <span class="str">"localhost:6379"</span>,
+})
+
+<span class="cm">// Store data with auto JSON marshalling</span>
+app.<span class="fn">Gib</span>(ctx, <span class="str">"user:123"</span>).
+    <span class="fn">Value</span>(userData).
+    <span class="fn">TTL</span>(<span class="num">5</span> * time.Minute).
+    <span class="fn">Exec</span>()
+
+<span class="cm">// Retrieve with auto unmarshalling</span>
+found, _ := app.<span class="fn">Run</span>(ctx, <span class="str">"user:123"</span>).<span class="fn">Bind</span>(&result)</code></pre>
+            </div>
+        </div>
+    </header>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Features</span>
+                <h2>Built for the <span class="gradient-text">Golden Era</span> of Performance</h2>
+                <p>Everything you need to accelerate your Redis operations</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon-svg">
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+                        </svg>
+                    </div>
+                    <h3>Auto-Downstreaming</h3>
+                    <p>Automatically transforms raw Go structs into JSON when storing, and back when retrieving. No more
+                        manual marshalling.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-svg">
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 2v20M2 12h20" />
+                            <circle cx="12" cy="12" r="10" />
+                        </svg>
+                    </div>
+                    <h3>Nutritious API</h3>
+                    <p>Readable syntax that's healthy for your codebase. Prevents performance stunting with clean,
+                        fluent interfaces.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-svg">
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                    </div>
+                    <h3>Coalition Locking</h3>
+                    <p>Strong distributed lock mechanism. Prevents race conditions across goroutines and microservices.
+                    </p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-svg">
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                    </div>
+                    <h3>Targeted Caching</h3>
+                    <p>Generic type support for precise data retrieval. Data goes directly to the right destination.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-svg">
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" />
+                            <path d="M8 21h8M12 17v4" />
+                        </svg>
+                    </div>
+                    <h3>Cluster Support</h3>
+                    <p>Native Redis Cluster support with automatic data migration across regions and shards.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-svg">
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                    </div>
+                    <h3>Rate Limiting</h3>
+                    <p>Built-in token bucket rate limiter with HTTP middleware for fair API request distribution.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section id="installation" class="installation">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Installation</span>
+                <h2>Get Started in <span class="gradient-text-alt">Seconds</span></h2>
+            </div>
+
+            <div class="install-steps">
+                <div class="install-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Install the package</h4>
+                        <div class="code-block">
+                            <code>go get github.com/arielfikru/gibrun</code>
+                        </div>
+                    </div>
+                </div>
+                <div class="install-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Import in your code</h4>
+                        <div class="code-block">
+                            <code><span class="kw">import</span> <span class="str">"github.com/arielfikru/gibrun"</span></code>
+                        </div>
+                    </div>
+                </div>
+                <div class="install-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Connect to Redis</h4>
+                        <div class="code-block">
+                            <code>app := gibrun.<span class="fn">New</span>(gibrun.Config{Addr: <span class="str">"localhost:6379"</span>})</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Usage Section -->
+    <section id="usage" class="usage">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Usage</span>
+                <h2>Three Simple Operations</h2>
+                <p>Master the framework with just three concepts</p>
+            </div>
+
+            <div class="usage-tabs">
+                <button class="tab-btn active" data-tab="gib">Gib (Store)</button>
+                <button class="tab-btn" data-tab="run">Run (Retrieve)</button>
+                <button class="tab-btn" data-tab="sprint">Sprint (Atomic)</button>
+            </div>
+
+            <div class="usage-content">
+                <div class="tab-panel active" id="gib">
+                    <div class="panel-info">
+                        <h3>Gib - Store Data</h3>
+                        <p>Use <code>.Gib()</code> to store data in Redis. Structs are automatically marshalled to JSON.
+                        </p>
+                        <ul>
+                            <li><code>.Value()</code> - Set the data to store</li>
+                            <li><code>.TTL()</code> - Set expiration time</li>
+                            <li><code>.Exec()</code> - Execute the operation</li>
+                        </ul>
+                    </div>
+                    <div class="panel-code">
+                        <pre><code><span class="kw">type</span> Program <span class="kw">struct</span> {
+    Name   <span class="tp">string</span> <span class="str">`json:"name"`</span>
+    Budget <span class="tp">int64</span>  <span class="str">`json:"budget"`</span>
+}
+
+data := Program{
+    Name:   <span class="str">"Free Lunch"</span>,
+    Budget: <span class="num">400000000000</span>,
+}
+
+err := app.<span class="fn">Gib</span>(ctx, <span class="str">"program:priority"</span>).
+    <span class="fn">Value</span>(data).
+    <span class="fn">TTL</span>(<span class="num">5</span> * time.Minute).
+    <span class="fn">Exec</span>()</code></pre>
+                    </div>
+                </div>
+
+                <div class="tab-panel" id="run">
+                    <div class="panel-info">
+                        <h3>Run - Retrieve Data</h3>
+                        <p>Use <code>.Run()</code> to fetch data from Redis. Automatically unmarshals to your target
+                            type.</p>
+                        <ul>
+                            <li><code>.Bind(&ptr)</code> - Unmarshal to struct</li>
+                            <li><code>.Raw()</code> - Get raw string value</li>
+                            <li><code>.Bytes()</code> - Get raw bytes</li>
+                        </ul>
+                    </div>
+                    <div class="panel-code">
+                        <pre><code><span class="kw">var</span> result Program
+
+found, err := app.<span class="fn">Run</span>(ctx, <span class="str">"program:priority"</span>).
+    <span class="fn">Bind</span>(&result)
+
+<span class="kw">if</span> found {
+    fmt.<span class="fn">Printf</span>(<span class="str">"Program: %s\n"</span>, result.Name)
+    fmt.<span class="fn">Printf</span>(<span class="str">"Budget: %d\n"</span>, result.Budget)
+} <span class="kw">else</span> {
+    fmt.<span class="fn">Println</span>(<span class="str">"Data not found"</span>)
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="tab-panel" id="sprint">
+                    <div class="panel-info">
+                        <h3>Sprint - Atomic Operations</h3>
+                        <p>Use <code>.Sprint()</code> for high-speed counter operations.</p>
+                        <ul>
+                            <li><code>.Incr()</code> - Increment by 1</li>
+                            <li><code>.IncrBy(n)</code> - Increment by n</li>
+                            <li><code>.Decr()</code> - Decrement by 1</li>
+                        </ul>
+                    </div>
+                    <div class="panel-code">
+                        <pre><code><span class="cm">// Increment visitor count</span>
+count, _ := app.<span class="fn">Sprint</span>(ctx, <span class="str">"counter:visitors"</span>).
+    <span class="fn">Incr</span>()
+
+fmt.<span class="fn">Printf</span>(<span class="str">"Total visitors: %d\n"</span>, count)
+
+<span class="cm">// Increment score by 100</span>
+score, _ := app.<span class="fn">Sprint</span>(ctx, <span class="str">"counter:score"</span>).
+    <span class="fn">IncrBy</span>(<span class="num">100</span>)</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="brand-text">Gib.run</span>
+                </div>
+                <p class="footer-tagline">"Give Data. Run Fast."</p>
+                <div class="footer-links">
+                    <a href="https://github.com/arielfikru/gibrun" target="_blank">GitHub</a>
+                    <a href="https://pkg.go.dev/github.com/arielfikru/gibrun" target="_blank">Go Docs</a>
+                </div>
+                <p class="footer-license">MIT License</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
